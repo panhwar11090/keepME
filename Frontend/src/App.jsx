@@ -1,14 +1,20 @@
+import SignUp from './component/SignUp'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { BrowserRouter, Routes, Route,Router } from 'react-router-dom';
+
+
 import './App.css'
 
 function App() {
 
   return (
-    <>
-     
-    </>
+    <Router>
+      <Routes>
+        <Route path='/signup' element={<SignUp/>}></Route>
+        {/* <Route path='/signup' element={<SignUp/>}></Route> */}
+      </Routes>
+    </Router>
   )
 }
 
