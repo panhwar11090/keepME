@@ -1,18 +1,20 @@
 import SignUp from './component/SignUp'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import { BrowserRouter, Routes, Route,Router } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 
 import './App.css'
+import Login from './component/Login'
+import Home from './component/Home'
 
 function App() {
 
   return (
     <Router>
       <Routes>
-        <Route path='/signup' element={<SignUp/>}></Route>
-        {/* <Route path='/signup' element={<SignUp/>}></Route> */}
+        <Route exact path="/signup" element={<SignUp/>} />
+        <Route exact path="/login" element={<Login/>} />
+        <Route exact path="/home" element={<Home/>} />
       </Routes>
     </Router>
   )
