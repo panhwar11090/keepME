@@ -10,9 +10,25 @@ import Home from './component/Home'
 
 function App() {
 
+  // const [notes, setNotes] = useState([]);
+
+  //     function addNote(newNote) {
+  //       setNotes((prevNotes) => {
+  //         return [...prevNotes, newNote];
+  //       })
+  // }
+
+  // function deleteNotes(id) {
+  //   setNotes((preValue) => {
+  //     return [...preValue.filter((note, index) => index !== id)];
+  //   });
+  // }
+
   return (
-    <>
-      <div>
+    <div className='p-0 m-0 box-border'>
+      
+
+      {/* <div>
         <nav className='navbar navbar-expand-sm navbar-dark bg-dark'>
 
           <ul className='navbar-nav'>
@@ -24,7 +40,7 @@ function App() {
 
         </nav>
 
-      </div>
+      </div> */}
       <Router>
         <h1>huzaifas</h1>
         <Routes>
@@ -33,7 +49,20 @@ function App() {
           <Route exact path="/home" element={<Home/>} />
         </Routes>
       </Router>
-    </>
+
+
+      {/* <Header/>
+      <CreateArea onAdd={addNote}/>
+      {notes.map((note, index) => (
+        <Note
+          key={index}
+          id={index}
+          title={note.title}
+          content={note.content}
+          onDelete={deleteNotes}
+        />
+      ))} */}
+    </div>
   )
 }
 

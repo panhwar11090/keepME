@@ -1,10 +1,13 @@
 const express = require("express")
 const mongoose = require('mongoose')
 const cors = require("cors")
-require("dotenv").config();
-const connection = require("./db")
-const KeepmeModel = require("./models/user")
+const dotenv = require("dotenv")
+// const connection = require("./db")
+// const KeepmeModel = require("./models/user")
 
+dotenv.config()
+const userRouter = require("./routes/userRoutes");
+const noteRouter = require("./routes/noteRoutes");
 
 const app = express()
 
@@ -12,14 +15,14 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const PORT = 3001;
+const PORT =process.env.PORT || 3001;
 
 // mongoose.connect('mongodb://127.0.0.1:27017/keepme', {
 //   useNewUrlParser: true,
 //   useUnifiedTopology: true
 // });
 //database connection
-connection();
+// connection();
 
 // app.post('/login', (req, res) => {
 //     const {email, password} = req.body;
@@ -44,6 +47,17 @@ connection();
 // })
 
 
-app.listen(PORT,()=>{
-    console.log(`server is running ${PORT}`)
+
+
+app.use("/users",userRouter);
+app.use("/note", noteRouter);
+
+mongoose.connect(process.env.MONGO_URL)
+.then(()=>{
+    app.listen(PORT,()=>{
+        console.log(`server is running ${PORT}`)
+    })
 })
+.catch((err)=>{
+    console.log(err);
+})  

@@ -4,14 +4,14 @@ import axios from "axios"
 
 
 function Login() {
-    const  [name, setName] = useState()
+    const  [username, setUserName] = useState()
     const  [email, setEmail] = useState()
     const  [password, setPassword] = useState()
     const navigate = useNavigate()
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        axios.post('http://localhost:3001/signup',{name, email,password})
+        axios.post('http://localhost:3001/users/signup',{username, email,password})
         .then((result)=>{
             console.log(result)
             navigate('/login')
@@ -34,7 +34,7 @@ function Login() {
                             autoComplete="off"
                             name="name"
                             className="form-control rounded-0" 
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => setUserName(e.target.value)}
                         />
                     </div>
                     <div className="mb-3">
