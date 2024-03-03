@@ -42,9 +42,8 @@ function App() {
 
       </div> */}
       <Router>
-        <h1>huzaifas</h1>
         <Routes>
-          <Route exact path="/signup" element={<SignUp/>} />
+          <Route exact path="/" element={<SignUp/>} />
           <Route exact path="/login" element={<Login/>} />
           <Route exact path="/home" element={<Home/>} />
         </Routes>
