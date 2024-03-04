@@ -1,14 +1,24 @@
-import React, { useState } from "react";
+import React, { } from "react";
 import axios from "axios";
 import { IoIosAdd } from "react-icons/io";
+import { useState, useEffect } from 'react';
 
-function CreateArea({ onAdd }) {
+function CreateArea({ onAdd , title: initialTitle, description: initialDescription }) {
   const [isExpanded, setExpanded] = useState(false);
 
   const [note, setNote] = useState({
-    title: "",
-    description: "",
+    title: initialTitle || '',
+    description:initialDescription || '',
   });
+
+  useEffect(() => {
+    setNote({
+      title: initialTitle || '',
+      description: initialDescription || '',
+    });
+  }, [initialTitle, initialDescription]);
+
+  
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -26,8 +36,10 @@ function CreateArea({ onAdd }) {
 
 
   function submitButton(event) {
+    event.preventDefault();
     const token = localStorage.getItem("token"); // Assuming you store the token in localStorage after login
     // const userId = localStorage.getItem("userId"); // Assuming you store the userId in localStorage after login  
+    const noteId = localStorage.getItem("noteId")
     console.log(token)
       console.log("huzaifa")
     const headers = {
@@ -35,8 +47,25 @@ function CreateArea({ onAdd }) {
       "Content-Type": "application/json"
       // userId: userId
     };
-  
-    axios.post("http://localhost:3001/note/", {
+
+    if(initialTitle && initialDescription){
+      axios.put(`http://localhost:3001/note/${noteId}`, {
+        title: note.title,
+        description: note.description
+      }, { headers })
+      .then(response =>{
+        console.log('Sucess', response.data)
+        onUpdate(response.data.title, response.data.description);
+        setExpanded({
+          title:"",
+          description:"",
+        })
+      })
+      .catch(error =>{
+        console.error('Error', error)
+      });
+    }else{
+      axios.post("http://localhost:3001/note/", {
       title: note.title,
       description: note.description
     }, {
@@ -59,6 +88,10 @@ function CreateArea({ onAdd }) {
       console.error('Error:', error);
     });
   
+
+    }
+  
+    
     event.preventDefault();
   }
 
@@ -100,6 +133,14 @@ function CreateArea({ onAdd }) {
           onClick={submitButton}>
           <IoIosAdd size={35}/>
         </button>
+
+        {/* <button
+         className="bg-blue-500 text-white  mr-10 flex justify-center items-center rounded-full w-9 h-9 shadow-md absolute bottom-1 right-1 focus:outline-none"
+          
+        >
+          <IoIosAdd size={35}/>
+        </button> */}
+
       </form>
     </div>
   );
