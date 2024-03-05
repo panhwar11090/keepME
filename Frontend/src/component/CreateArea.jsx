@@ -159,6 +159,10 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
     window.open(`http://localhost:3001/files/${pdf}`, "_blank", "noreferrer")
   }
 
+  const showImage= (image)=>{
+    window.open(`http://localhost:3001/files/${image}`, "_blank", "noreferrer")
+  }
+
 
   const submitImage = async (e)=>{
     e.preventDefault();
@@ -174,10 +178,16 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
     console.log(result)
   }
 
-  const getImage = async(image)=>{
-    const result = await axios.get(`http://localhost:3001/files/${image}`);
-    console.log(result)
-    setAllImage(result.data.data);
+  const getImage = async()=>{
+    try {
+      const result = await axios.get("http://localhost:3001/get-image");
+      
+      setAllImage(result.data.data);
+      
+    } catch (error) {
+      console.error(error)
+    }
+    
   }
 
 
@@ -299,7 +309,11 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
         {allImage == null? "" : allImage.map((data,index)=>{
           console.log("IMAGE", data?.image)
           return (
-          <img key={data._id} src={data.image} height={100} width={100}/>
+            <>
+            {/* <img key={data._id} src={data.image} height={200} width={200}/> */}
+            <h6 key={index} onClick={()=>showImage(data.image)}>Title:{data.image}</h6>
+            <button onClick={()=>showImage(data.image)}>view</button>
+          </>
         )
         })}
       </div>
