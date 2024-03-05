@@ -2,14 +2,44 @@ import React, { } from "react";
 import axios from "axios";
 import { IoIosAdd } from "react-icons/io";
 import { useState, useEffect } from 'react';
+import Image from "./Image";
 
 function CreateArea({ onAdd , title: initialTitle, description: initialDescription }) {
   const [isExpanded, setExpanded] = useState(false);
+  const [file, setFile] = useState(null);
+  const [title, setTitle] = useState("")
+  const [allPdf, setAllPdf] = useState(null)
+  const [image, setImage] = useState();
+  const [allImage , setAllImage] = useState();
 
   const [note, setNote] = useState({
     title: initialTitle || '',
     description:initialDescription || '',
   });
+
+  const onInputImageChange =(e) =>{
+    console.log(e.target.files[0]);
+    setImage(e.target.files[0]);
+  }
+
+
+  useEffect(()=>{
+    getImage();
+  },[])
+
+
+  useEffect(()=>{
+    getPdf();
+  },[]);
+
+  const getPdf = async()=>{
+    const result = await axios.get("http://localhost:3001/get-files");
+    console.log(result.data.data);
+    setAllPdf(result.data.data)
+
+  };
+
+
 
   useEffect(() => {
     setNote({
@@ -29,10 +59,31 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
       };
     });
   }
+
   function handleExpanded() {
     setExpanded(true);
   }
 
+
+  const submitPdf = async (e)=>{
+    e.preventDefault();
+    const formData = new FormData()
+    formData.append('title',title);
+    formData.append('file', file);
+    console.log(file)
+    const result = await axios.post(
+      "http://localhost:3001/upload-files", 
+      formData,
+      {
+        headers: {"Content-Type": "multipart/form-data"},
+      }
+    );
+      console.log(result)
+      if(result.data.status == "ok"){
+        alert('uploaded sucesfully');
+        getPdf()
+      }
+  }
 
 
   function submitButton(event) {
@@ -104,9 +155,37 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
   //   event.preventDefault();
   // }
 
+  const showPdf = (pdf)=>{
+    window.open(`http://localhost:3001/files/${pdf}`, "_blank", "noreferrer")
+  }
+
+
+  const submitImage = async (e)=>{
+    e.preventDefault();
+    const formData = new FormData();
+    formData.append("image", image)
+    const result = await axios.post(
+      "http://localhost:3001/upload-image",
+      formData,
+      {
+        headers: {"Content-Type": "multiport/form-data"},
+      }
+    )
+    console.log(result)
+  }
+
+  const getImage = async(image)=>{
+    const result = await axios.get(`http://localhost:3001/files/${image}`);
+    console.log(result)
+    setAllImage(result.data.data);
+  }
+
+
+
+
   return (
     <div className="relative mx-auto mt-32 bg-white p-7 rounded-lg shadow-md w-full" style={{width:"600px", height:"200px", marginTop:"20px"}}>
-      <form>
+      <form onSubmit={submitPdf}>
         {isExpanded && (
           <input
             className="w-full p-2 outline-none text-base resize-none ml-0 mt-0 border-none "
@@ -133,6 +212,55 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
           onClick={submitButton}>
           <IoIosAdd size={35}/>
         </button>
+        {/* <label for="file-upload" className="flex items-center justify-center w-32 h-12 bg-blue-500 text-white rounded-md cursor-pointer">
+          <svg className="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Upload PDF
+        </label> */}
+
+
+              <label htmlFor="file-upload" className="cursor-pointer">
+                Upload PDF
+                
+                <input 
+                    id="file-upload" 
+                    type="file" 
+                    accept="application/pdf" 
+                    required
+                    className="hidden"
+                    onChange={(e)=> setFile(e.target.files[0])} 
+                />
+              </label>
+              <input 
+                  className="form-control"
+                  type="text"
+                  placeholder="Title"
+                  required
+                  onChange={(e)=> setTitle(e.target.value)} 
+                
+                />
+              {
+                file && (
+                  <button 
+                  className="bg-yellow-500 text-white py-2 px-4 rounded-md cursor-pointer"
+                  
+                
+                  >    
+                    submit 
+                  </button>
+                )
+              }
+              
+
+        
+        
+        
+        {/* <input 
+          type="file" 
+          accept="application/pdf"
+          required  
+        /> */}
 
         {/* <button
          className="bg-blue-500 text-white  mr-10 flex justify-center items-center rounded-full w-9 h-9 shadow-md absolute bottom-1 right-1 focus:outline-none"
@@ -142,6 +270,39 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
         </button> */}
 
       </form>
+      <div>
+        <h4>Uploaded PDF</h4>
+        <div>
+          {allPdf == null? "" : allPdf.map((data,index)=>{
+            return(
+              <div>
+                <h6 key={index}>Title:{data.title}</h6>
+                <button
+                  onClick={()=>showPdf(data.pdf)}
+                >
+                  show pdf
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      <div className="">
+        <form onSubmit={submitImage}>
+            <input 
+              type="file" 
+              accept="image/*"
+              onChange={onInputImageChange} 
+            />
+            <button type="submit">Submit</button>
+        </form>
+        {allImage == null? "" : allImage.map((data,index)=>{
+          console.log("IMAGE", data?.image)
+          return (
+          <img key={data._id} src={data.image} height={100} width={100}/>
+        )
+        })}
+      </div>
     </div>
   );
 }
