@@ -5,6 +5,30 @@ import Header from './Header'
 import Note from './Note'
 const Home = () => {
   const [notes, setNotes] = useState([]);
+
+  // const [allNotes, setAllNote] = useState(null);
+
+  // useEffect(()=>{
+  //   const getNotes = async ()=>{
+  //     const token = localStorage.getItem("token");
+  //     const headers = {
+  //       Authorization: `Bearer ${token}`,
+  //       "Content-Type": "application/json"
+        
+  //     };
+  //     try{
+  //       const result = await axios.get("http://localhost:3001/note",{headers});
+  //       setAllNote(result.data)
+  //       console.log(result.data)
+  //     }catch(err){
+  //       console.log("error ",err)
+  //     }
+      
+  //   }
+  //   getNotes()
+  // },[])
+
+  
   
   const [updateContent, setUpdateContent] = useState({ title: '', description: '' });
 
@@ -33,8 +57,8 @@ const Home = () => {
     });
   }
 
-  const updateNote = (title, description) => {
-    setUpdateContent({ title, description });
+  const updateNote = (title, description,_id) => {
+    setUpdateContent({ title, description,_id});
   };
 
   
@@ -42,15 +66,18 @@ const Home = () => {
     <div>
         <Header/>
       < CreateArea onAdd={addNote} title={updateContent.title} description={updateContent.description}/>
+       
         {notes.map((note, index) => (
-          <Note
+          <>
+            <Note
             key={index}
             id={index}
             title={note.title}
             description={note.description}
             onDelete={deleteNoteById}
-            onUpdate={updateNote}
-          />
+            onUpdate={updateNote} />
+            
+          </>
         ))}
     </div>
   )

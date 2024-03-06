@@ -2,13 +2,11 @@ import React from "react";
 import { MdDelete, MdUpdate } from "react-icons/md";
 import axios from "axios";
 
-function Note({title, description, onDelete, id, onUpdate }) {
+function Note({title, description, onDelete, _id, onUpdate }) {
 
   
-  
-  
   const handleUpdate = () => {
-    onUpdate(title, description);
+    onUpdate(title, description,_id);
   };
 
 
@@ -40,7 +38,7 @@ function Note({title, description, onDelete, id, onUpdate }) {
 
   return (
     <div className="bg-white w-64 rounded-lg shadow-md p-4 m-4 float-left mr-0 ">
-        
+  
         <h1 className="text-base font-bold mb-2">{title}</h1>
         <p className="text-base text-red-700 mb-4">{description}</p>
         <button 

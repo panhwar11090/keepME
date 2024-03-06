@@ -20,7 +20,7 @@ const app = express()
 
 const corsOptions = {
     origin: 'http://localhost:5173', // Allow requests from this origin
-    methods: 'GET, POST', // Allow only GET and POST requests
+    methods: 'GET, POST,PUT,DELETE', // Allow only GET and POST requests
     allowedHeaders: 'Content-Type,Authorization', // Allow only specified headers
 };
 
@@ -77,6 +77,31 @@ app.get('/get-files', async (req,res)=>{
     }
 })
 
+app.post('/multi-files', upload.any(), async(req,res)=>{
+    console.log(req.file);
+    const titles = req.body.title;
+    // const fileName = req.file.filename;
+    console.log(req.file)
+    try {
+        const filesData = req.files.map((file, index)=>{
+            return{
+                title:titles[index],
+                pdf:file.filename
+            }
+        })
+        await PdfSchema.create(filesData);
+        res.send({status:"ok"});
+        console.log("filesData",filesData)
+    } catch (error) {
+        res.json({status:error})
+    }
+})
+
+
+
+
+
+
 
 const storageForUploads = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -102,6 +127,21 @@ app.post("/upload-image", upload.single("image"),async (req,res) =>{
         res.json({status: error})
     }
 })
+
+app.post("/multi-image", upload.any(),async (req,res) =>{
+    
+    try {
+        const imageNames = req.files.map(file=> file.filename);
+        await Promise.all(imageNames.map(imageName=> Images.create({image:imageName}) ))
+        
+        res.json({status:"ok"})
+        
+    } catch (error) {
+        res.json({status: error})
+    }
+})
+
+
 app.get("/get-image", async (req,res)=>{
     try {
         Images.find({}).then((data)=>{

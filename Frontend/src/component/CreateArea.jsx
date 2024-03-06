@@ -6,8 +6,8 @@ import Image from "./Image";
 
 function CreateArea({ onAdd , title: initialTitle, description: initialDescription }) {
   const [isExpanded, setExpanded] = useState(false);
-  const [file, setFile] = useState(null);
-  const [title, setTitle] = useState("")
+  const [files, setFiles] = useState(null);
+  const [titles, setTitles] = useState("")
   const [allPdf, setAllPdf] = useState(null)
   const [image, setImage] = useState();
   const [allImage , setAllImage] = useState();
@@ -65,25 +65,61 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
   }
 
 
-  const submitPdf = async (e)=>{
+  // const submitPdf = async (e)=>{
+  //   e.preventDefault();
+  //   const formData = new FormData()
+  //   formData.append('title',title);
+  //   formData.append('file', file);
+  //   console.log(file)
+  //   const result = await axios.post(
+  //     "http://localhost:3001/upload-files", 
+  //     formData,
+  //     {
+  //       headers: {"Content-Type": "multipart/form-data"},
+  //     }
+  //   );
+  //     console.log(result)
+  //     if(result.data.status == "ok"){
+  //       alert('uploaded sucesfully');
+  //       getPdf()
+  //     }
+  // }
+
+
+  const submitPdf = async (e) => {
     e.preventDefault();
-    const formData = new FormData()
-    formData.append('title',title);
-    formData.append('file', file);
-    console.log(file)
-    const result = await axios.post(
-      "http://localhost:3001/upload-files", 
-      formData,
-      {
-        headers: {"Content-Type": "multipart/form-data"},
+    console.log("filesfiles",files)
+    const formData = new FormData();
+
+    // Append all selected files to the FormData
+    for (let i = 0; i < files.length; i++) {
+      formData.append("file", files[i]);
+    }
+
+    // Append titles to the FormData
+    for (let i = 0; i < titles.length; i++) {
+      formData.append("title", titles[i]);
+    }
+
+    try {
+      const result = await axios.post(
+        "http://localhost:3001/multi-files",
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+      console.log(result);
+      if (result.data.status === "ok") {
+        alert('uploaded successfully');
       }
-    );
-      console.log(result)
-      if(result.data.status == "ok"){
-        alert('uploaded sucesfully');
-        getPdf()
-      }
-  }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
+
 
 
   function submitButton(event) {
@@ -169,7 +205,7 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
     const formData = new FormData();
     formData.append("image", image)
     const result = await axios.post(
-      "http://localhost:3001/upload-image",
+      "http://localhost:3001/multi-image",
       formData,
       {
         headers: {"Content-Type": "multiport/form-data"},
@@ -236,10 +272,15 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
                 <input 
                     id="file-upload" 
                     type="file" 
-                    accept="application/pdf" 
+                    accept="application/pdf"
+                    multiple 
                     required
                     className="hidden"
-                    onChange={(e)=> setFile(e.target.files[0])} 
+                    onChange={(e)=> { 
+                      console.log("files",e.target.files)
+                      setFiles(e.target.files)
+                    }
+                    } 
                 />
               </label>
               <input 
@@ -247,11 +288,11 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
                   type="text"
                   placeholder="Title"
                   required
-                  onChange={(e)=> setTitle(e.target.value)} 
+                  onChange={(e)=> setTitles(e.target.value)} 
                 
                 />
               {
-                file && (
+                files && (
                   <button 
                   className="bg-yellow-500 text-white py-2 px-4 rounded-md cursor-pointer"
                   
@@ -302,6 +343,7 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
             <input 
               type="file" 
               accept="image/*"
+              multiple
               onChange={onInputImageChange} 
             />
             <button type="submit">Submit</button>
