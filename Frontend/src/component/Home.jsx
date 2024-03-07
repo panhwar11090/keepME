@@ -3,6 +3,8 @@ import { useState } from 'react'
 import CreateArea from './CreateArea'
 import Header from './Header'
 import Note from './Note'
+import Image from './Show'
+import Show from './Show'
 const Home = () => {
   const [notes, setNotes] = useState([]);
 
@@ -65,6 +67,8 @@ const Home = () => {
   return (
     <div>
         <Header/>
+        
+        
       < CreateArea onAdd={addNote} title={updateContent.title} description={updateContent.description}/>
        
         {notes.map((note, index) => (
@@ -79,6 +83,8 @@ const Home = () => {
             
           </>
         ))}
+
+        
     </div>
   )
 }

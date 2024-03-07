@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Routes,Link } from 'react-router-dom'
 import './App.css'
 import Login from './component/Login'
 import Home from './component/Home'
+import Show from './component/Show'
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
         </Routes>
       </Router>
 
+      {/* <Show/> */}
 
       {/* <Header/>
       <CreateArea onAdd={addNote}/>

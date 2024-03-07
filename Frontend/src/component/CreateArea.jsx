@@ -2,7 +2,7 @@ import React, { } from "react";
 import axios from "axios";
 import { IoIosAdd } from "react-icons/io";
 import { useState, useEffect } from 'react';
-import Image from "./Image";
+
 
 function CreateArea({ onAdd , title: initialTitle, description: initialDescription }) {
   const [isExpanded, setExpanded] = useState(false);
@@ -101,7 +101,7 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
 
     // Append titles to the FormData
     for (let i = 0; i < titles.length; i++) {
-      formData.append("title", titles[i]);
+      formData.append("title", titles);
     }
 
     try {
