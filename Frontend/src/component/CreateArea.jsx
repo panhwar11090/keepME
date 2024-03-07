@@ -18,8 +18,11 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
   });
 
   const onInputImageChange =(e) =>{
-    console.log(e.target.files[0]);
-    setImage(e.target.files[0]);
+    const files = e.target.files
+    const selectedImages = Array.from(files)
+    // console.log(e.target.files[0]);
+
+    setImage(selectedImages);
   }
 
 
@@ -202,13 +205,19 @@ function CreateArea({ onAdd , title: initialTitle, description: initialDescripti
 
   const submitImage = async (e)=>{
     e.preventDefault();
+    console.log("image",image)
     const formData = new FormData();
-    formData.append("image", image)
+    // formData.append("image", image)
+
+    for (let i = 0; i < image.length; i++) {
+      formData.append("file", image[i]);
+    }
+
     const result = await axios.post(
       "http://localhost:3001/multi-image",
       formData,
       {
-        headers: {"Content-Type": "multiport/form-data"},
+        headers: {"Content-Type": "multipart/form-data"},
       }
     )
     console.log(result)
